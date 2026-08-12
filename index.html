@@ -2,36 +2,370 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="一个部署在 GitHub Pages 的个人博客。" />
-    <title>林的笔记</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#08080c" />
+
+    <title>林小越 Coco — 个人主页</title>
+    <meta name="description" content="林小越（Coco）的个人主页。重庆大学会计学 ACCA 方向，做过审计、税务与市场研究实习，现就读于新加坡国立大学 GDipSA 项目。" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="林小越 Coco — 个人主页" />
+    <meta property="og:description" content="会计出身，做过审计。现在在新加坡国立大学 GDipSA，换一种语言重新开始。" />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308080c'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%237b5cff' stroke-width='2.5'/%3E%3Ccircle cx='22' cy='11' r='3' fill='%2335e8d4'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="assets/style.css" />
+
+    <script>
+      // 提前打标记：有 JS 时才启用入场动画，避免无 JS 环境下文字永久隐藏
+      document.documentElement.classList.add("js");
+    </script>
   </head>
+
   <body>
-    <header class="site-header">
-      <a class="brand" href="index.html">林的笔记</a>
-      <nav aria-label="主导航"><a href="#posts">文章</a><a href="#about">关于</a><a href="https://github.com/" target="_blank" rel="noreferrer">GitHub ↗</a></nav>
+    <!-- 顶部滚动进度条 -->
+    <div class="progress" aria-hidden="true"><span></span></div>
+
+    <!-- 背景：流动光晕 + 噪点颗粒 + 鼠标光斑 -->
+    <div class="aurora" aria-hidden="true">
+      <span class="blob blob-1"></span>
+      <span class="blob blob-2"></span>
+      <span class="blob blob-3"></span>
+    </div>
+    <div class="grid-lines" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <!-- ═══════════════ 导航 ═══════════════ -->
+    <header class="nav" id="nav">
+      <a class="nav-brand" href="#top">
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>林小越</span>
+      </a>
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#about" data-nav="about">关于</a>
+        <a href="#work" data-nav="work">经历</a>
+        <a href="#path" data-nav="path">学习</a>
+        <a href="#beyond" data-nav="beyond">另一面</a>
+        <a href="#notes" data-nav="notes">笔记</a>
+        <a href="#contact" data-nav="contact" class="nav-cta">联系</a>
+      </nav>
+      <button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span>
+      </button>
     </header>
 
-    <main>
-      <section class="hero">
-        <p class="eyebrow">HELLO, WORLD</p>
-        <h1>记录思考，也记录生活。</h1>
-        <p>这是我的个人小站：分享技术、阅读和那些值得留住的日常。</p>
+    <main id="main">
+      <!-- ═══════════════ 首屏 ═══════════════ -->
+      <section class="hero" id="top">
+        <div class="hero-inner">
+          <p class="eyebrow" data-reveal>
+            <span class="pulse" aria-hidden="true"></span>
+            PERSONAL SITE — SINGAPORE
+          </p>
+
+          <h1 class="hero-title">
+            <span class="line fill gradient-text" data-split>林小越</span>
+            <span class="line stroke" data-split>COCO LIN</span>
+          </h1>
+
+          <p class="hero-sub" data-reveal>
+            会计学 ACCA 方向出身，在事务所做过审计。<br />
+            现在在新加坡国立大学的 GDipSA 项目，换一种语言重新开始。
+          </p>
+
+          <div class="hero-actions" data-reveal>
+            <a class="btn btn-primary" href="#work">
+              <span>看看我做过的事</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
+            </a>
+            <a class="btn btn-ghost" href="#contact">聊两句</a>
+          </div>
+
+          <ul class="hero-meta" data-reveal>
+            <li><span class="k">现居</span><span class="v">新加坡</span></li>
+            <li><span class="k">本地时间</span><span class="v" id="clock">--:--:--</span></li>
+            <li><span class="k">状态</span><span class="v accent">在读 · 开放机会</span></li>
+          </ul>
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true">
+          <span class="scroll-cue-line"></span>
+          <span class="scroll-cue-text">SCROLL</span>
+        </div>
       </section>
 
-      <section id="posts" class="posts" aria-labelledby="posts-title">
-        <div class="section-title"><h2 id="posts-title">最新文章</h2><span>2026</span></div>
-        <article class="post-card">
-          <time datetime="2026-08-11">2026.08.11</time>
-          <div><p class="tag">开始</p><h3><a href="posts/first-post.html">我的博客开张了</a></h3><p>从一个空白仓库出发，搭建属于自己的互联网角落。</p></div>
-          <a class="arrow" href="posts/first-post.html" aria-label="阅读我的博客开张了">→</a>
-        </article>
+      <!-- ═══════════════ 滚动文字带 ═══════════════ -->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <!-- ✏️ 改这里：滚动带上的关键词（下面两份内容要保持一致，才能无缝循环） -->
+          <span class="marquee-group">审计 AUDIT <i>✦</i> 会计 ACCOUNTING <i>✦</i> 代码 CODE <i>✦</i> 新加坡 SINGAPORE <i>✦</i> 舞台 STAGE <i>✦</i> 好奇心 CURIOSITY <i>✦</i></span>
+          <span class="marquee-group">审计 AUDIT <i>✦</i> 会计 ACCOUNTING <i>✦</i> 代码 CODE <i>✦</i> 新加坡 SINGAPORE <i>✦</i> 舞台 STAGE <i>✦</i> 好奇心 CURIOSITY <i>✦</i></span>
+        </div>
+      </div>
+
+      <!-- ═══════════════ 关于 ═══════════════ -->
+      <section class="section" id="about">
+        <div class="section-head" data-reveal>
+          <span class="section-num">01</span>
+          <h2 class="section-title">关于我</h2>
+          <span class="section-line"></span>
+          <span class="section-en">ABOUT</span>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-text" data-reveal>
+            <p class="lead">我叫林小越，也可以叫我 Coco。</p>
+
+            <p>
+              本科在重庆大学经济与工商管理学院读会计学（ACCA 方向）。
+              这几年做过三段实习：在会计师事务所做审计，在税务局处理数电票，在香港的保险公司做市场研究。
+            </p>
+            <p>
+              审计教会我的其实是一件很朴素的事：任何一个数字，都要能顺着链条一路追到源头。
+              对不上的地方不能绕过去，只能一条一条查。
+            </p>
+            <p>
+              现在我在新加坡国立大学的 GDipSA（系统分析研究生文凭）项目，
+              开始学着把这套习惯用在代码上——不同的是，这次数字是自己写出来的。
+            </p>
+
+            <ul class="tag-list">
+              <li>会计学 ACCA 方向</li>
+              <li>审计实习</li>
+              <li>正在转码</li>
+              <li>细节强迫症</li>
+              <li>上过舞台</li>
+            </ul>
+          </div>
+
+          <div class="about-card" data-reveal data-spotlight>
+            <!-- ✏️ 改这里：把 <div class="portrait-ph"> 整块换成你的照片：
+                 <img class="portrait" src="assets/photo.jpg" alt="林小越的照片" /> -->
+            <div class="portrait-ph">
+              <span class="portrait-ring" aria-hidden="true"></span>
+              <span class="portrait-hint">把照片放这里</span>
+              <span class="portrait-path">assets/photo.jpg</span>
+            </div>
+            <dl class="about-facts">
+              <div><dt>在读</dt><dd>NUS · GDipSA</dd></div>
+              <div><dt>本科</dt><dd>重庆大学 · 会计学（ACCA）</dd></div>
+              <div><dt>证书</dt><dd>ACCA 已过 5/13 · CET-4/6</dd></div>
+              <div><dt>现居</dt><dd>新加坡</dd></div>
+            </dl>
+          </div>
+        </div>
       </section>
 
-      <section id="about" class="about"><p class="eyebrow">ABOUT</p><h2>你好，我是林。</h2><p>这里是一个安静的写作空间。你可以将这段文字改成自己的介绍，也可以在页面上继续添加文章链接。</p></section>
+      <!-- ═══════════════ 近况 ═══════════════ -->
+      <section class="section" id="now">
+        <div class="section-head" data-reveal>
+          <span class="section-num">02</span>
+          <h2 class="section-title">最近在做</h2>
+          <span class="section-line"></span>
+          <span class="section-en">NOW</span>
+        </div>
+
+        <!-- ✏️ 改这里：四张「近况」卡片，随时换成当下真实的状态 -->
+        <div class="now-grid">
+          <article class="now-card" data-reveal data-spotlight>
+            <span class="now-icon" aria-hidden="true">◐</span>
+            <h3>在学</h3>
+            <p>GDipSA 的课程。第一次系统地学写代码，从看懂报错开始。</p>
+          </article>
+          <article class="now-card" data-reveal data-spotlight>
+            <span class="now-icon" aria-hidden="true">❏</span>
+            <h3>在考</h3>
+            <p>ACCA 已经过了 5 门，剩下的边转行边慢慢啃完。</p>
+          </article>
+          <article class="now-card" data-reveal data-spotlight>
+            <span class="now-icon" aria-hidden="true">✳</span>
+            <h3>在做</h3>
+            <p>这个网站。从一个空仓库开始，边查边写，也算第一个前端作品。</p>
+          </article>
+          <article class="now-card" data-reveal data-spotlight>
+            <span class="now-icon" aria-hidden="true">◇</span>
+            <h3>在适应</h3>
+            <p>新加坡的湿度、食阁和地铁报站。目前进度：还行。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 经历 ═══════════════ -->
+      <section class="section" id="work">
+        <div class="section-head" data-reveal>
+          <span class="section-num">03</span>
+          <h2 class="section-title">做过的事</h2>
+          <span class="section-line"></span>
+          <span class="section-en">EXPERIENCE</span>
+        </div>
+
+        <div class="work-list">
+          <div class="work-item" data-reveal data-spotlight>
+            <span class="work-num">01</span>
+            <div class="work-body">
+              <h3>审计实习生 · 重庆康华会计师事务所</h3>
+              <p>
+                参与 5 家企业年度审计项目，执行信贷资产、在建工程等科目的抽凭、截止性测试与凭证完整性核查，
+                识别跨期交易 12 处、附件缺失 15 处、异常金额凭证 1 处。用 Excel 梳理信贷资产明细账与合同余额，
+                查出 52 处异常并推动账务调整。独立整理 8 份审计底稿，建立异常事项追踪台账。
+              </p>
+              <ul class="work-tags"><li>审计</li><li>Excel</li><li>底稿</li></ul>
+            </div>
+            <span class="work-year">2026</span>
+          </div>
+
+          <div class="work-item" data-reveal data-spotlight>
+            <span class="work-num">02</span>
+            <div class="work-body">
+              <h3>税务实习生 · 国家税务总局乐清市税务局</h3>
+              <p>
+                协助处理数电票开具、红冲、额度调整与税控盘注销，累计处理相关问题 300 余件。
+                日均核对录入增值税档案 250 余份，建立异常事项日清日结表。
+                参与温州税务公众号《发票缴销操作指南》的内容梳理与图文制作。
+              </p>
+              <ul class="work-tags"><li>税务</li><li>数电票</li><li>内容</li></ul>
+            </div>
+            <span class="work-year">2024</span>
+          </div>
+
+          <div class="work-item" data-reveal data-spotlight>
+            <span class="work-num">03</span>
+            <div class="work-body">
+              <h3>市场研究实习生 · 富通保险（香港）</h3>
+              <p>
+                研究香港保险行业的监管框架与产品体系，梳理 10 余份产品资料；
+                对标 3 家头部机构，从产品条款、保障范围与定价三个维度做竞品比较，形成对比表。
+              </p>
+              <ul class="work-tags"><li>市场研究</li><li>竞品分析</li><li>香港</li></ul>
+            </div>
+            <span class="work-year">2023</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 学习轨迹 ═══════════════ -->
+      <section class="section" id="path">
+        <div class="section-head" data-reveal>
+          <span class="section-num">04</span>
+          <h2 class="section-title">一路走来</h2>
+          <span class="section-line"></span>
+          <span class="section-en">PATH</span>
+        </div>
+
+        <ol class="timeline">
+          <li class="tl-item" data-reveal>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-year">2026 —</span>
+            <div class="tl-body">
+              <h3>新加坡国立大学 · GDipSA</h3>
+              <p>搬到新加坡，进入系统分析研究生文凭项目，正式开始学软件开发。</p>
+            </div>
+          </li>
+          <li class="tl-item" data-reveal>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-year">2022–2026</span>
+            <div class="tl-body">
+              <h3>重庆大学 · 会计学（ACCA 方向）</h3>
+              <p>经济与工商管理学院。最喜欢的一门课是审计与认证业务——第一次发现"查账"其实是在讲逻辑。</p>
+            </div>
+          </li>
+          <li class="tl-item" data-reveal>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-year">在校期间</span>
+            <div class="tl-body">
+              <h3>新加坡国立大学 · Financial Analysis and Accounting</h3>
+              <p>国际交流项目，最终取得 Merit 等级。也是我第一次在新加坡待上一段时间。</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ═══════════════ 另一面 ═══════════════ -->
+      <section class="section" id="beyond">
+        <div class="section-head" data-reveal>
+          <span class="section-num">05</span>
+          <h2 class="section-title">另一面</h2>
+          <span class="section-line"></span>
+          <span class="section-en">BEYOND</span>
+        </div>
+
+        <div class="now-grid">
+          <article class="now-card" data-reveal data-spotlight>
+            <span class="now-icon" aria-hidden="true">✦</span>
+            <h3>全国大学生艺术展演</h3>
+            <p>第七届全国大学生艺术展演银奖，重庆赛区金奖（第三名）。会计只是我的一部分。</p>
+          </article>
+          <article class="now-card" data-reveal data-spotlight>
+            <span class="now-icon" aria-hidden="true">◈</span>
+            <h3>SRTP 科研训练</h3>
+            <p>第十五届大学生科研训练计划，负责立项汇报与全流程数据分析，最终以校级"良好"结项。</p>
+          </article>
+          <article class="now-card" data-reveal data-spotlight>
+            <span class="now-icon" aria-hidden="true">◎</span>
+            <h3>百人百课</h3>
+            <p>作为核心成员参与暑期社会实践，团队获评"全国大学生暑期实践团队 TOP100"。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 笔记 ═══════════════ -->
+      <section class="section" id="notes">
+        <div class="section-head" data-reveal>
+          <span class="section-num">06</span>
+          <h2 class="section-title">写点东西</h2>
+          <span class="section-line"></span>
+          <span class="section-en">NOTES · IN ENGLISH</span>
+        </div>
+
+        <!-- ✏️ 改这里：文章列表。新增文章时，复制 posts/first-post.html 改内容，再在这里加一条 -->
+        <div class="note-list">
+          <a class="note-item" href="posts/first-post.html" data-reveal>
+            <time datetime="2026-08-11">2026 / 08 / 11</time>
+            <div class="note-body">
+              <span class="note-tag">Beginning</span>
+              <h3>Hello, world — again</h3>
+              <p>Four years of ledgers, and now a blank text editor. Starting over, in a new language.</p>
+            </div>
+            <span class="note-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 联系 ═══════════════ -->
+      <section class="section contact" id="contact">
+        <div class="contact-inner" data-reveal>
+          <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>CONTACT</p>
+          <h2 class="contact-title gradient-text" data-split>想聊点什么？</h2>
+          <p class="contact-sub">
+            合作、提问、或者只是想打个招呼——都欢迎。我基本上都会回。
+          </p>
+
+          <!-- ✏️ 如果不想公开邮箱，把下面整个 <a class="mail"> 删掉即可 -->
+          <a class="mail" href="mailto:cocolinlxy4869@163.com">
+            <span>cocolinlxy4869@163.com</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+
+          <!-- ✏️ 改这里：把 # 换成你的主页链接，不需要的整行删掉 -->
+          <ul class="social">
+            <li><a href="#" target="_blank" rel="noreferrer noopener">GitHub</a></li>
+            <li><a href="#" target="_blank" rel="noreferrer noopener">LinkedIn</a></li>
+            <li><a href="#" target="_blank" rel="noreferrer noopener">小红书</a></li>
+            <li><a href="#" target="_blank" rel="noreferrer noopener">Instagram</a></li>
+          </ul>
+        </div>
+      </section>
     </main>
 
-    <footer><span>© 2026 林的笔记</span><span>Built with GitHub Pages</span></footer>
+    <footer class="footer">
+      <span>© 2026 林小越 Coco</span>
+      <span class="footer-mid">新加坡时间 <b id="clock-2">--:--</b> · 用心做的</span>
+      <a href="#top" class="to-top">回到顶部 ↑</a>
+    </footer>
+
+    <script src="assets/main.js"></script>
   </body>
 </html>
