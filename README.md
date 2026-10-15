@@ -1,77 +1,83 @@
-# 林小越 Coco · 个人主页
+# Coco Lin · Portfolio
 
-一个纯静态的个人主页，部署在 GitHub Pages 上。
+林小越（Coco）的英文求职作品集，纯静态，部署在 GitHub Pages：<https://ogoehayashi.github.io/my-web-page/>
 
 **没有构建步骤，没有 npm，没有任何外部依赖。** 改完文件直接 push，网站就更新了。
 
 ---
 
+## 设计原则：作品先说话
+
+这一版的读者是新加坡的招聘方和面试官。招聘方大约 10 秒决定要不要往下看，所以：
+
+- **首屏**：一句话定位，右边直接播放 PlanPilot 的真实操作录屏
+- **数字条**：4 个都能在代码仓库里核实的数字
+- **项目**：每个项目用 bento 拼贴来展示（录屏、截图、架构图、代码），文字 ≤ 35 个英文单词
+- **详细内容**放在单独的项目详情页（`projects/`），给想深入看的工程师
+- 教育和实习经历压缩成一条时间线；完整版放在简历 PDF 里
+
 ## 文件结构
 
 ```
-index.html              首页（关于 / 近况 / 作品 / 足迹 / 笔记 / 联系）
-posts/first-post.html   博客文章（英文）
-assets/style.css        全部样式
-assets/main.js          全部交互
+index.html                 首页
+projects/planpilot.html    PlanPilot 项目详情页
+projects/cats.html         CATS 项目详情页
+posts/first-post.html      博客文章
+assets/style.css           全部样式（浅色为主，自动适配深色模式）
+assets/main.js             录屏播放控制、导航高亮、页脚年份
+assets/work/planpilot/     PlanPilot 的录屏 demo.mp4、封面图和截图（webp）
+assets/work/cats/          CATS 的录屏、封面图和截图
 ```
 
----
+所有录屏和截图都是**在本地真实运行这两个项目后录下来的**，不是设计稿。整个 `assets/work/` 大约 1.1 MB。
 
 ## 怎么改内容
 
-**所有需要你替换的地方，都在 HTML 里用 `<!-- ✏️ 改这里：… -->` 标好了。** 用任意编辑器搜索 `✏️` 就能找到全部。
-
-正文内容已经按简历填成真实信息了：关于、三段实习经历（康华事务所审计 / 乐清税务局 / 富通保险）、学习轨迹、艺术展演与 SRTP 等经历、ACCA 进度。
-
-还需要你确认或替换的：
+需要替换的地方都在 HTML 里用 `<!-- ✏️ … -->` 标好了，搜索 `✏️` 就能全部找到。
 
 | 位置 | 内容 |
 | --- | --- |
-| `index.html` 联系区 | 社交链接的 `href` 目前都是 `#`，换成真实主页；不用的整行删掉 |
-| `index.html` 联系区 | 邮箱 `cocolinlxy4869@163.com` —— **公开页面会被爬虫抓到**，不想公开就把整个 `<a class="mail">` 删掉 |
-| `index.html` 近况区 | 四张卡片是当下状态，过一阵就该更新 |
-| `index.html` 关于区 | 自我介绍——换成自己的话会更像本人 |
-| 头像 | 见下方「换头像」 |
+| 首页 hero | 求职状态那一行 |
+| 简历 PDF | 放到 `assets/Coco-Lin-Resume.pdf`，再删掉首页两处简历链接上的 `hidden` |
+| LinkedIn | 联系区 LinkedIn 按钮换成真实地址，再删掉 `hidden` |
+| 时间线 | 经历节点，每条 ≤ 10 个词 |
+| Also 那一行 | ACCA 通过科目数等 |
 
-**手机号没有放上去**，是有意的：个人主页是公开的，电话号码放上去等于公开给爬虫。需要的话再自己加。
+邮箱用的是 `ogoehayashi@gmail.com`。**公开页面上的邮箱会被爬虫抓到**，手机号是有意没放的。
 
-### 换头像
+## 数字的出处
 
-把照片放进 `assets/`，然后在 `index.html` 里把这一整块：
+页面上的数字都可以核实，以后改动时请保持这个标准：
 
-```html
-<div class="portrait-ph"> … </div>
-```
+| 数字 | 出处 |
+| --- | --- |
+| 935 automated tests | PlanPilot `tests/unit` 的测试数（`pytest tests/unit`） |
+| 13 hard constraints | PlanPilot 合约文件里的 HC-001…HC-013 |
+| 403 | CATS 里员工访问 `/manager/**` 的真实响应（录屏里能看到） |
+| 41 tests / 0 failures、21 个是她写的 | CATS `mvnw test`；`SecurityIntegrationTests` 15 个 + `ManagerFlowViewTests` 6 个 |
+| 52 discrepancies | 审计实习经历（简历） |
 
-换成：
+## 录屏怎么重新录
 
-```html
-<img class="portrait" src="assets/photo.jpg" alt="林小越的照片" />
-```
+录屏是用 Playwright 驱动本机的 Edge 自动操作两个项目、加上光标和字幕后录下来的，再用 ffmpeg 压成 H.264 MP4（每个约 300 KB）。如果项目界面有大改动需要重录：
 
-### 换配色
+1. 本地把 CATS（JDK 21，可以用 H2 内存库代替 MySQL）和 PlanPilot（Python 3.11，`PLANPILOT_FORBID_LLM_NETWORK=1`）跑起来
+2. 用同样的流程操作一遍并录屏，导出成 `demo.mp4`（1280×800）和封面 `demo-poster.webp`
+3. 覆盖 `assets/work/<项目>/` 里的同名文件即可，HTML 不用改
 
-`assets/style.css` 最上面的 `:root` 里有三个主色，整站的光晕、强调色、渐变都由它们决定：
+## 新增一个项目
 
-```css
---violet: #7b5cff;
---cyan:   #35e8d4;
---pink:   #ff5c9d;
-```
+首页：复制一整块 `<article class="project">`，换标题、文字和 bento 里的图。详情页：复制 `projects/cats.html` 改内容。
 
-改这三个值，整站气质就变了。
+## 新增一篇文章
 
-### 新增一篇文章
-
-1. 复制 `posts/first-post.html`，改成新文件名（例如 `posts/my-second-post.html`）
+1. 复制 `posts/first-post.html`，改成新文件名
 2. 替换标题、日期和正文
-3. 回到 `index.html` 的「写点东西」区块，照着现有那条 `<a class="note-item">` 再加一条，指向新文件
+3. 在首页页脚的 `Notes:` 旁边加一个链接
 
 ---
 
 ## 本地预览
-
-不需要装任何东西，在项目目录下跑：
 
 ```bash
 python3 -m http.server 8000
@@ -79,23 +85,15 @@ python3 -m http.server 8000
 
 然后打开 http://localhost:8000 。
 
-> 直接双击 `index.html` 用 `file://` 打开也能看，但部分浏览器会拦截相对路径，建议还是用上面的方式。
-
----
-
 ## 部署
 
-仓库已经接好 GitHub Pages。push 到 `main` 分支后等一两分钟，网站就会更新。
+push 到 `main` 分支后等一两分钟，网站就会更新。
 
 如果 Pages 还没开：仓库页面 → Settings → Pages → Source 选 `Deploy from a branch` → 分支选 `main`、目录选 `/ (root)` → Save。
 
----
+## 实现说明
 
-## 一些实现上的说明
-
-写在这里是为了以后改动时不踩同样的坑：
-
-- **字体全部用系统字体**，没有引入 Google Fonts。国内访问 `fonts.googleapis.com` 会被墙，页面会卡在等字体上。
-- **首屏大标题的渐变是逐字切分的**（`main.js` 里的 `paintGradientText`）。因为父元素的 `background-clip: text` 裁不住带 `transform` 的子元素，而逐字入场动画正好要用 `transform`——直接写会导致标题完全不可见。
-- **入场动画有兜底**：万一 `IntersectionObserver` 没触发，2.5 秒后会直接显示全部内容，不会出现空白页。
-- **尊重系统的「减弱动态效果」设置**，开启后所有动画会自动关闭。
+- **字体全部用系统字体**，没有引入 Google Fonts：国内访问 `fonts.googleapis.com` 会被墙。
+- **录屏自己托管**，没有用 YouTube/Vimeo（国内打不开）。
+- **录屏只在滚到屏幕里时播放**，离开就暂停；每个录屏右下角都有暂停按钮。系统开了「减弱动态效果」时不自动播放，只显示封面。
+- **没有 JS 也能看**：录屏会显示封面图，其它内容都不依赖 JS。

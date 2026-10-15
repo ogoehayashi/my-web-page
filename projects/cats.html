@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1218" media="(prefers-color-scheme: dark)" />
+
+    <title>CATS case study · Coco Lin</title>
+    <meta name="description" content="CATS: a Spring Boot course-application and approval system. Coco Lin owned its security layer and wrote half of its backend tests." />
+    <meta property="og:title" content="CATS — course approvals, locked down and tested" />
+    <meta property="og:image" content="https://ogoehayashi.github.io/my-web-page/assets/work/cats/demo-poster.webp" />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231b2433'/%3E%3Ctext x='16' y='21' font-family='Arial,sans-serif' font-size='13' font-weight='700' fill='%23faf8f4' text-anchor='middle'%3ECL%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../assets/style.css" />
+    <script>document.documentElement.classList.add("js");</script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="brand" href="../index.html" aria-label="Coco Lin — home">
+          <span class="brand-mark" aria-hidden="true">CL</span>
+          <span>Coco Lin</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a href="../index.html#work">Work</a>
+          <a href="../index.html#about">About</a>
+          <a href="../index.html#contact">Contact</a>
+        </nav>
+        <a class="nav-cta" href="mailto:ogoehayashi@gmail.com">Email me</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="cs-hero">
+        <div class="wrap">
+          <a class="back" href="../index.html#work">← All work</a>
+          <span class="kicker" style="display:block">Case study · Web application</span>
+          <h1>Course approvals, locked down and tested</h1>
+          <p class="cs-lead">
+            CATS takes employee training from course application to manager approval to fee reimbursement.
+            I owned its security layer and the quality of the approval workflow.
+          </p>
+
+          <dl class="meta">
+            <div><dt>My role</dt><dd>Security &amp; testing: Spring Security, BCrypt, approval-flow fixes</dd></div>
+            <div><dt>Team</dt><dd>6 developers</dd></div>
+            <div><dt>Context</dt><dd>NUS-ISS GDipSA course project, 30 Sep – 14 Oct 2026</dd></div>
+            <div><dt>Stack</dt><dd>Java 21 · Spring Boot · Spring Security · JPA · Thymeleaf · React</dd></div>
+          </dl>
+
+          <figure class="frame">
+            <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="frame-url">CATS · recorded from the running app</span></div>
+            <video data-loop muted loop playsinline preload="metadata" width="1280" height="800"
+              poster="../assets/work/cats/demo-poster.webp"
+              aria-label="CATS demo: an employee is blocked from a manager page with 403 Forbidden, then the manager reviews and approves a request.">
+              <source src="../assets/work/cats/demo.mp4" type="video/mp4" />
+            </video>
+            <button class="vid-toggle" type="button" data-state="paused" aria-label="Play video">
+              <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
+              <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" /></svg>
+            </button>
+          </figure>
+          <p class="links" style="margin-top:16px"><a href="https://github.com/sunnysky-cell/CATS" target="_blank" rel="noopener">View the code on GitHub</a></p>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">The problem</span>
+          <h2>Three roles, one set of rules</h2>
+          <p>
+            Training requests have to respect working days, public holidays, annual quotas, budgets and overlapping
+            leave. Employees, managers and administrators each see different data and take different actions.
+            Before the security work, passwords were stored in plain text and there was no central access control.
+          </p>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">How access works</span>
+          <h2>Deny by default</h2>
+          <p>Every page needs a login. Manager and admin areas check the role on the server, so a typed-in URL gets a 403, not a page.</p>
+
+          <div class="bento figure-block">
+            <div class="tile span-3">
+              <div class="tile-head"><b>Access matrix</b><span>Covered by 15 integration tests.</span></div>
+              <div class="tile-body">
+                <table class="matrix">
+                  <thead><tr><th scope="col"><span hidden>Role</span></th><th scope="col">/employee</th><th scope="col">/manager</th><th scope="col">/admin</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Employee</th><td><span class="ok">200</span></td><td><span class="no">403</span></td><td><span class="no">403</span></td></tr>
+                    <tr><th scope="row">Manager</th><td><span class="ok">200</span></td><td><span class="ok">200</span></td><td><span class="no">403</span></td></tr>
+                    <tr><th scope="row">Admin</th><td><span class="ok">200</span></td><td><span class="ok">200</span></td><td><span class="ok">200</span></td></tr>
+                    <tr><th scope="row">Signed out</th><td><span class="redir">login</span></td><td><span class="redir">login</span></td><td><span class="redir">login</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tile span-3">
+              <div class="tile-head"><b>The rules I wrote</b><span>From <code>SecurityConfig.java</code>.</span></div>
+              <div class="tile-body">
+<pre class="code"><code>.<span class="f">requestMatchers</span>(<span class="s">"/"</span>, <span class="s">"/login"</span>, <span class="s">"/admin/login"</span>).<span class="f">permitAll</span>()
+<span class="hl">.<span class="f">requestMatchers</span>(<span class="s">"/manager/**"</span>).<span class="f">hasAnyRole</span>(<span class="s">"MANAGER"</span>, <span class="s">"ADMIN"</span>)</span>
+<span class="hl">.<span class="f">requestMatchers</span>(<span class="s">"/admin/**"</span>).<span class="f">hasRole</span>(<span class="s">"ADMIN"</span>)</span>
+.<span class="f">anyRequest</span>().<span class="f">authenticated</span>()
+
+<span class="k">return new</span> <span class="f">BCryptPasswordEncoder</span>();</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">Decisions</span>
+          <h2>Three calls that shaped it</h2>
+          <ul class="decisions">
+            <li>
+              <h3>Bridge, don&rsquo;t rewrite</h3>
+              <dl>
+                <dt>Instead of</dt><dd>Replacing the team&rsquo;s session login with Spring&rsquo;s form login.</dd>
+                <dt>Because</dt><dd>A small filter hands the existing session to Spring Security. Nobody else&rsquo;s code had to change.</dd>
+              </dl>
+            </li>
+            <li>
+              <h3>Hash every password</h3>
+              <dl>
+                <dt>Instead of</dt><dd>Plain-text passwords in the database.</dd>
+                <dt>Because</dt><dd>BCrypt across login, seed data and admin user creation, with server-side length rules.</dd>
+              </dl>
+            </li>
+            <li>
+              <h3>Fix the cause, then write the rule</h3>
+              <dl>
+                <dt>Instead of</dt><dd>Patching the HTTP 500s page by page.</dd>
+                <dt>Because</dt><dd>The root cause, a model key shadowed by a Thymeleaf built-in, became a team coding rule plus regression tests.</dd>
+              </dl>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">In the app</span>
+          <h2>One request, three points of view</h2>
+          <div class="gallery">
+            <figure>
+              <div class="frame"><img src="../assets/work/cats/dashboard.webp" width="1600" height="1000" loading="lazy" alt="Employee dashboard with course requests and their status" /></div>
+              <figcaption><b>Employee.</b> Requests, statuses and the remaining annual allowance.</figcaption>
+            </figure>
+            <figure>
+              <div class="frame"><img src="../assets/work/cats/pending.webp" width="1600" height="1000" loading="lazy" alt="Manager pending review queue" /></div>
+              <figcaption><b>Manager.</b> A review queue; every decision needs a written reason.</figcaption>
+            </figure>
+            <figure>
+              <div class="frame"><img src="../assets/work/cats/forbidden.webp" width="1600" height="1000" loading="lazy" alt="Forbidden page shown to an employee who opens a manager URL" /></div>
+              <figcaption><b>Wrong role.</b> An employee who types a manager URL gets a friendly 403.</figcaption>
+            </figure>
+            <figure>
+              <div class="frame"><img src="../assets/work/cats/calendar.webp" width="1600" height="1000" loading="lazy" alt="Training calendar with an approved course on 2 and 3 November" /></div>
+              <figcaption><b>Calendar.</b> Approved training lands on the employee&rsquo;s calendar.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">My contribution</span>
+          <h2>What I built</h2>
+          <ul class="contrib">
+            <li><b>Security layer.</b> Role-based URL rules for employee, manager and admin areas, CSRF protection, and the session bridge filter.</li>
+            <li><b>Password storage.</b> BCrypt hashing across login, seed accounts and user administration.</li>
+            <li><b>Root-cause fix.</b> Restored the four missing manager views and renamed the shadowed model key, with a written root-cause note for the team.</li>
+            <li><b>Tests.</b> 15 security integration tests and 6 approval-flow regression tests, plus an in-memory H2 profile so the suite runs without MySQL.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">Quality</span>
+          <h2>In numbers</h2>
+          <ul class="numbers">
+            <li><b>41</b><span>backend tests, 0 failures (rerun for this page)</span></li>
+            <li><b>21</b><span>of those tests written by me</span></li>
+            <li><b>4</b><span>access levels tested: three roles plus signed out</span></li>
+            <li><b>0</b><span>plain-text passwords after the BCrypt migration</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <a class="next-project" href="planpilot.html">
+            <span><span class="kicker">Next project</span><b>PlanPilot: a planning agent that can&rsquo;t approve its own plans</b></span>
+            <span class="links"><span>Read case study →</span></span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <span>© <span id="year">2026</span> Coco (Xiaoyue) Lin · Singapore</span>
+        <a href="../index.html">Back to home ↑</a>
+      </div>
+    </footer>
+
+    <script src="../assets/main.js"></script>
+  </body>
+</html>

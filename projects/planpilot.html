@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1218" media="(prefers-color-scheme: dark)" />
+
+    <title>PlanPilot case study · Coco Lin</title>
+    <meta name="description" content="PlanPilot: an AI production-planning agent where the LLM explains and deterministic, audited code decides. Case study by Coco Lin." />
+    <meta property="og:title" content="PlanPilot — a planning agent that can't approve its own plans" />
+    <meta property="og:image" content="https://ogoehayashi.github.io/my-web-page/assets/work/planpilot/demo-poster.webp" />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231b2433'/%3E%3Ctext x='16' y='21' font-family='Arial,sans-serif' font-size='13' font-weight='700' fill='%23faf8f4' text-anchor='middle'%3ECL%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../assets/style.css" />
+    <script>document.documentElement.classList.add("js");</script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="brand" href="../index.html" aria-label="Coco Lin — home">
+          <span class="brand-mark" aria-hidden="true">CL</span>
+          <span>Coco Lin</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a href="../index.html#work">Work</a>
+          <a href="../index.html#about">About</a>
+          <a href="../index.html#contact">Contact</a>
+        </nav>
+        <a class="nav-cta" href="mailto:ogoehayashi@gmail.com">Email me</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="cs-hero">
+        <div class="wrap">
+          <a class="back" href="../index.html#work">← All work</a>
+          <span class="kicker" style="display:block">Case study · AI agent</span>
+          <h1>A planning agent that can&rsquo;t approve its own plans</h1>
+          <p class="cs-lead">
+            PlanPilot lets factory planners ask for a production schedule in plain English. A Claude model
+            interprets and explains; deterministic code builds, checks and gates every plan.
+          </p>
+
+          <dl class="meta">
+            <div><dt>My role</dt><dd>Core developer: runtime authority, validator, solver, LLM binding</dd></div>
+            <div><dt>Team</dt><dd>4 people, team Fa1c0ns_</dd></div>
+            <div><dt>Context</dt><dd>NUS-ISS &ldquo;Show Me Your Agents&rdquo; hackathon, Sep 2026</dd></div>
+            <div><dt>Stack</dt><dd>Python · OR-Tools CP-SAT · AWS Bedrock · SQLite · Docker</dd></div>
+          </dl>
+
+          <figure class="frame">
+            <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="frame-url">PlanPilot · recorded from the running app</span></div>
+            <video data-loop muted loop playsinline preload="metadata" width="1280" height="800"
+              poster="../assets/work/planpilot/demo-poster.webp"
+              aria-label="PlanPilot demo: generate three plans, inspect the machine schedule, request approval, verify the audit chain.">
+              <source src="../assets/work/planpilot/demo.mp4" type="video/mp4" />
+            </video>
+            <button class="vid-toggle" type="button" data-state="paused" aria-label="Play video">
+              <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
+              <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" /></svg>
+            </button>
+          </figure>
+          <p class="links" style="margin-top:16px"><a href="https://github.com/ogoehayashi/planpilot" target="_blank" rel="noopener">View the code on GitHub</a></p>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">The problem</span>
+          <h2>Spreadsheets can&rsquo;t be audited</h2>
+          <p>
+            Planners at small manufacturers juggle orders, machines, materials and worker skills in spreadsheets.
+            Plans are slow to build, impossible to reproduce, and nobody can say afterwards why a schedule was chosen.
+            Putting an LLM in charge would be faster, but its numbers can&rsquo;t be trusted. We wanted the speed of a
+            conversation with the guarantees of an audited system.
+          </p>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">How it works</span>
+          <h2>The model talks. The code decides.</h2>
+          <p>Only one step touches the language model, and it never produces a number that reaches a plan.</p>
+
+          <div class="figure-block">
+            <ol class="pipeline wide">
+              <li><div><b>Ask</b><small>Planner describes the goal in plain English</small></div></li>
+              <li class="llm"><div><b>Interpret</b><small>Claude returns a JSON intent, never a schedule</small></div></li>
+              <li><div><b>Solve</b><small>CP-SAT in 5 ordered stages, fixed seed</small></div></li>
+              <li><div><b>Validate</b><small>Independent checker: 13 constraints, KPIs, digest</small></div></li>
+              <li><div><b>Approve</b><small>Server-routed roles, expiry, invalidation</small></div></li>
+              <li><div><b>Publish</b><small>Idempotent, bound to the approved digest</small></div></li>
+            </ol>
+            <p class="chain-bar"><b>audit</b> every step → append-only log, each entry chained with SHA-256 → <b>verify</b> any time</p>
+            <p class="legend"><span><i class="warm"></i>Language model (Claude Sonnet 4.5 on Bedrock)</span><span><i></i>Deterministic code</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">Decisions</span>
+          <h2>Three calls that shaped it</h2>
+          <ul class="decisions">
+            <li>
+              <h3>The LLM proposes, the solver decides</h3>
+              <dl>
+                <dt>Instead of</dt><dd>Letting the model write the schedule.</dd>
+                <dt>Because</dt><dd>A model&rsquo;s output can&rsquo;t be proven feasible. A constraint solver&rsquo;s can.</dd>
+              </dl>
+            </li>
+            <li>
+              <h3>A second opinion, in code</h3>
+              <dl>
+                <dt>Instead of</dt><dd>Trusting whatever the solver returns.</dd>
+                <dt>Because</dt><dd>A separately written validator catches bugs in the first. Any mismatch fails closed.</dd>
+              </dl>
+            </li>
+            <li>
+              <h3>Approvals bind to an exact plan</h3>
+              <dl>
+                <dt>Instead of</dt><dd>Editable plan records.</dd>
+                <dt>Because</dt><dd>Plans are immutable and digest-bound. Regenerate one and its old approvals are void.</dd>
+              </dl>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">In the app</span>
+          <h2>What planners and managers see</h2>
+          <div class="gallery">
+            <figure>
+              <div class="frame"><img src="../assets/work/planpilot/tower.webp" width="1600" height="1000" loading="lazy" alt="PlanPilot control tower with plan version, on-time rate, material risk and approval status" /></div>
+              <figcaption><b>Control tower.</b> Plan version, on-time rate, material risk and approval state at a glance.</figcaption>
+            </figure>
+            <figure>
+              <div class="frame"><img src="../assets/work/planpilot/approval.webp" width="1600" height="812" loading="lazy" alt="Approval queue with a pending approval set, approver role and affected orders" /></div>
+              <figcaption><b>Approval queue.</b> The server decides who must sign off, why, and when the request expires.</figcaption>
+            </figure>
+            <figure>
+              <div class="frame"><img src="../assets/work/planpilot/gantt.webp" width="1600" height="417" loading="lazy" alt="Gantt chart across CNC, grinding, milling and QC" /></div>
+              <figcaption><b>Machine schedule.</b> Every operation on every machine, straight from the solver.</figcaption>
+            </figure>
+            <figure>
+              <div class="frame"><img src="../assets/work/planpilot/audit.webp" width="1600" height="365" loading="lazy" alt="Audit trail with plan digest and verified hash chain" /></div>
+              <figcaption><b>Audit trail.</b> Plan digest, solver status and a verifiable hash chain of every event.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">My contribution</span>
+          <h2>What I built</h2>
+          <ul class="contrib">
+            <li><b>Runtime authority.</b> The single write path for plans: plan versions and approval state commit in one atomic SQLite transaction, so an approved plan can&rsquo;t drift from the one reviewed.</li>
+            <li><b>Independent validator.</b> Recomputes all 13 hard constraints, material reservations and KPIs for every schedule.</li>
+            <li><b>Scheduling engine.</b> Reworked the CP-SAT model into five lexicographic stages (unscheduled, late orders, lateness, skills, cost) with a fixed seed.</li>
+            <li><b>LLM binding &amp; hardening.</b> Pinned the agent to Claude Sonnet 4.5 with JSON-only intents, added tool-error middleware, ran a security audit and fixed its findings, and built the 17-sheet Excel import with record-level quarantine.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <span class="kicker">Quality</span>
+          <h2>In numbers</h2>
+          <ul class="numbers">
+            <li><b>935</b><span>automated tests, none of which call the model or the network</span></li>
+            <li><b>13</b><span>hard constraints re-checked by the independent validator</span></li>
+            <li><b>5</b><span>ordered solver stages, fixed seed: same input, same plan</span></li>
+            <li><b>6+</b><span>adversarial review rounds on the plan store before the deadline</span></li>
+          </ul>
+          <p>
+            One lesson I&rsquo;ll keep: when an early &ldquo;30 of 30 evaluation cases passed&rdquo; claim turned out
+            not to be backed by evidence, we retracted it in writing and rebuilt the evaluation gate. Auditors don&rsquo;t
+            sign off on numbers they can&rsquo;t trace, and neither should engineers.
+          </p>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <div class="wrap">
+          <a class="next-project" href="cats.html">
+            <span><span class="kicker">Next project</span><b>CATS: course approvals, locked down and tested</b></span>
+            <span class="links"><span>Read case study →</span></span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <span>© <span id="year">2026</span> Coco (Xiaoyue) Lin · Singapore</span>
+        <a href="../index.html">Back to home ↑</a>
+      </div>
+    </footer>
+
+    <script src="../assets/main.js"></script>
+  </body>
+</html>
